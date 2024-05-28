@@ -5,3 +5,5 @@
 /DerivedDataCache
 /.direnv
 /.devenv
+/.cache
+/.git
