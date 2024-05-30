@@ -19,7 +19,7 @@ protected:
 
 private:
     UFUNCTION(BlueprintCallable, Category = "Player")
-    void Move(FVector2D MovementVector);
+    void Move(FVector2D Direction);
 
     UFUNCTION(BlueprintCallable, Category = "Player")
     void Look(FVector2D Direction);
