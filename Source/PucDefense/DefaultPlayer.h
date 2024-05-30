@@ -13,16 +13,13 @@ class PUCDEFENSE_API ADefaultPlayer : public ACharacter {
 public:
     ADefaultPlayer();
 
-    virtual void Tick(float DeltaTime) override;
-
-    virtual void SetupPlayerInputComponent(class UInputComponent *PlayerInputComponent) override;
-
 protected:
     virtual void BeginPlay() override;
+    virtual void Tick(float DeltaTime) override;
 
 private:
     UFUNCTION(BlueprintCallable, Category = "Player")
-    void Move(FVector Direction, float Scale);
+    void Move(FVector2D MovementVector);
 
     UFUNCTION(BlueprintCallable, Category = "Player")
     void Look(FVector2D Direction);
