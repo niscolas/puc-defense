@@ -1,4 +1,5 @@
 #include "BasicTowerComponent.h"
+#include "Kismet/GameplayStatics.h"
 
 UBasicTowerComponent::UBasicTowerComponent() {
     PrimaryComponentTick.bCanEverTick = true;
@@ -21,6 +22,11 @@ void UBasicTowerComponent::Shoot() {
         return;
 
     FVector BulletSpawnLocation = BulletSpawnPoint->GetComponentLocation();
-    GetWorld()->SpawnActor<AActor>(BulletBlueprint, BulletSpawnLocation, FRotator::ZeroRotator,
+    FVector BulletSpawnDirection =
+        (UGameplayStatics::GetPlayerPawn(GetWorld(), 0)->GetActorLocation() - BulletSpawnLocation);
+    BulletSpawnDirection.Normalize();
+    FRotator BulletSpawnRotation = BulletSpawnDirection.Rotation();
+
+    GetWorld()->SpawnActor<AActor>(BulletBlueprint, BulletSpawnLocation, BulletSpawnRotation,
                                    FActorSpawnParameters());
 }
