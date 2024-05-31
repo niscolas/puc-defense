@@ -1,6 +1,8 @@
 #include "DefaultPlayer.h"
+#include "DrawDebugHelpers.h"
 #include "Engine/EngineTypes.h"
 #include "GameFramework/Actor.h"
+#include "Math/MathFwd.h"
 
 ADefaultPlayer::ADefaultPlayer() {
     PrimaryActorTick.bCanEverTick = true;
@@ -30,14 +32,23 @@ void ADefaultPlayer::PlaceTower() {
     CollisionParams.AddIgnoredActor(this);
     FHitResult HitResult;
 
-    GetWorld()->LineTraceSingleByChannel(HitResult, GetActorLocation(),
-                                         GetActorLocation() + GetActorForwardVector() * 1000,
-                                         ECC_Visibility, CollisionParams);
+    FVector Start = GetActorLocation();
+    FVector ForwardVector = GetActorForwardVector();
 
-    FVector TargetLocation = HitResult.ImpactPoint;
-    if (!HitResult.bBlockingHit)
+    if (PlacementLineTraceOrigin) {
+        Start = PlacementLineTraceOrigin->GetComponentLocation();
+        ForwardVector = PlacementLineTraceOrigin->GetForwardVector();
+    }
+
+    FVector End = Start + ForwardVector * PlacementLineTraceRange;
+    bool DidHit = GetWorld()->LineTraceSingleByChannel(HitResult, Start, End, ECC_Visibility,
+                                                       CollisionParams);
+    DrawPlaceTowerDebug(Start, End, DidHit, HitResult.Location);
+
+    if (!DidHit)
         return;
 
+    FVector TargetLocation = HitResult.ImpactPoint;
     FActorSpawnParameters SpawnParams;
     SpawnParams.Owner = this;
     SpawnParams.Instigator = GetInstigator();
@@ -49,4 +60,17 @@ void ADefaultPlayer::PlaceTower() {
 
     GetWorld()->SpawnActor<AActor>(TowerBlueprint, TargetLocation, FRotator::ZeroRotator,
                                    FActorSpawnParameters());
+}
+
+void ADefaultPlayer::DrawPlaceTowerDebug(FVector Start,
+                                         FVector End,
+                                         bool DidHit,
+                                         FVector HitLocation) {
+    FColor LineColor = DidHit ? FColor::Red : FColor::Green;
+
+    DrawDebugLine(GetWorld(), Start, End, LineColor, false, 1.0f, 0, 0.1f);
+
+    if (DidHit) {
+        DrawDebugSphere(GetWorld(), HitLocation, 20.0f, 10, FColor::Yellow, false, 1.0f);
+    }
 }

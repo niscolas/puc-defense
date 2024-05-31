@@ -20,6 +20,9 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player | Towers")
     USceneComponent *PlacementLineTraceOrigin;
 
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player | Towers")
+    float PlacementLineTraceRange;
+
 protected:
     virtual void BeginPlay() override;
     virtual void Tick(float DeltaTime) override;
@@ -33,4 +36,7 @@ private:
 
     UFUNCTION(BlueprintCallable, Category = "Player")
     void PlaceTower();
+
+    UFUNCTION(BlueprintCallable, Category = "Player")
+    void DrawPlaceTowerDebug(FVector Start, FVector End, bool DidHit, FVector HitLocation);
 };
