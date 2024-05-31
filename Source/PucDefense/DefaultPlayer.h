@@ -13,6 +13,12 @@ class PUCDEFENSE_API ADefaultPlayer : public ACharacter {
 public:
     ADefaultPlayer();
 
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player | Towers")
+    TSubclassOf<AActor> TowerBlueprint;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player | Towers")
+    USceneComponent *LineTraceOrigin;
+
 protected:
     virtual void BeginPlay() override;
     virtual void Tick(float DeltaTime) override;

@@ -1,4 +1,6 @@
 #include "DefaultPlayer.h"
+#include "Engine/EngineTypes.h"
+#include "GameFramework/Actor.h"
 
 ADefaultPlayer::ADefaultPlayer() {
     PrimaryActorTick.bCanEverTick = true;
@@ -24,4 +26,27 @@ void ADefaultPlayer::Look(FVector2D Direction) {
 }
 
 void ADefaultPlayer::PlaceTower() {
+    FCollisionQueryParams CollisionParams;
+    CollisionParams.AddIgnoredActor(this);
+    FHitResult HitResult;
+
+    GetWorld()->LineTraceSingleByChannel(HitResult, GetActorLocation(),
+                                         GetActorLocation() + GetActorForwardVector() * 1000,
+                                         ECC_Visibility, CollisionParams);
+
+    FVector TargetLocation = HitResult.ImpactPoint;
+    if (!HitResult.bBlockingHit)
+        return;
+
+    FActorSpawnParameters SpawnParams;
+    SpawnParams.Owner = this;
+    SpawnParams.Instigator = GetInstigator();
+    SpawnParams.SpawnCollisionHandlingOverride =
+        ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButDontSpawnIfColliding;
+
+    if (!TowerBlueprint)
+        return;
+
+    GetWorld()->SpawnActor<AActor>(TowerBlueprint, TargetLocation, FRotator::ZeroRotator,
+                                   FActorSpawnParameters());
 }
