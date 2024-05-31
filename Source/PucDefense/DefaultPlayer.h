@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Components/SceneComponent.h"
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "Math/MathFwd.h"
@@ -17,7 +18,7 @@ public:
     TSubclassOf<AActor> TowerBlueprint;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player | Towers")
-    USceneComponent *LineTraceOrigin;
+    USceneComponent *PlacementLineTraceOrigin;
 
 protected:
     virtual void BeginPlay() override;
