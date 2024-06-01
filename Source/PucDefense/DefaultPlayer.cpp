@@ -22,7 +22,6 @@ void ADefaultPlayer::Move(FVector2D Direction) {
 }
 
 void ADefaultPlayer::Look(FVector2D Direction) {
-    UE_LOG(LogTemp, Warning, TEXT("Looking to to %s"), *Direction.ToString());
     AddControllerYawInput(Direction.X);
     AddControllerPitchInput(Direction.Y);
 }
