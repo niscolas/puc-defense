@@ -1,5 +1,7 @@
 #include "BasicTowerComponent.h"
 #include "Kismet/GameplayStatics.h"
+#include "PucDefense/Enemy.h"
+#include "Templates/Casts.h"
 
 UBasicTowerComponent::UBasicTowerComponent() {
     PrimaryComponentTick.bCanEverTick = true;
@@ -21,9 +23,16 @@ void UBasicTowerComponent::Shoot() {
     if (!BulletSpawnPoint)
         return;
 
+    TArray<AActor *> OutEnemies;
+    UGameplayStatics::GetAllActorsWithInterface(GetWorld(), UEnemy::StaticClass(), OutEnemies);
+
+    FRandomStream RandomStream;
+    RandomStream.GenerateNewSeed();
+
+    AActor *TargetEnemy = OutEnemies[RandomStream.RandRange(0, OutEnemies.Num() - 1)];
+
     FVector BulletSpawnLocation = BulletSpawnPoint->GetComponentLocation();
-    FVector BulletSpawnDirection =
-        (UGameplayStatics::GetPlayerPawn(GetWorld(), 0)->GetActorLocation() - BulletSpawnLocation);
+    FVector BulletSpawnDirection = TargetEnemy->GetActorLocation() - BulletSpawnLocation;
     BulletSpawnDirection.Normalize();
     FRotator BulletSpawnRotation = BulletSpawnDirection.Rotation();
 
