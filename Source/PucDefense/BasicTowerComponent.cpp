@@ -26,6 +26,9 @@ void UBasicTowerComponent::Shoot() {
     TArray<AActor *> OutEnemies;
     UGameplayStatics::GetAllActorsWithInterface(GetWorld(), UEnemy::StaticClass(), OutEnemies);
 
+    if (OutEnemies.Num() == 0)
+        return;
+
     FRandomStream RandomStream;
     RandomStream.GenerateNewSeed();
 
