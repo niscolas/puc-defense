@@ -26,6 +26,9 @@ public:
     float Get() const;
 
     UFUNCTION(BlueprintCallable, Category = "Health")
+    float GetPercent() const;
+
+    UFUNCTION(BlueprintCallable, Category = "Health")
     bool CheckIsDead() const;
 
 protected:

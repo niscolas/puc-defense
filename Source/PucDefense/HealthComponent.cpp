@@ -28,6 +28,10 @@ float UHealthComponent::Get() const {
     return Current;
 }
 
+float UHealthComponent::GetPercent() const {
+    return Current / Max;
+}
+
 void UHealthComponent::Set(float NewAmount) {
     if (IsDead)
         return;
