@@ -40,6 +40,7 @@ void UHealthComponent::Set(float NewAmount) {
 
     if (Current == 0) {
         IsDead = true;
+        OnDeath.Broadcast();
     }
 }
 

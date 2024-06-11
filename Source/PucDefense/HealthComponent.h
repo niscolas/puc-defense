@@ -4,6 +4,9 @@
 #include "CoreMinimal.h"
 #include "HealthComponent.generated.h"
 
+UDELEGATE()
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnDeath);
+
 UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent))
 
 class PUCDEFENSE_API UHealthComponent : public UActorComponent {
@@ -30,6 +33,9 @@ public:
 
     UFUNCTION(BlueprintCallable, Category = "Health")
     bool CheckIsDead() const;
+
+    UPROPERTY(BlueprintAssignable, Category = "Health")
+    FOnDeath OnDeath;
 
 protected:
     virtual void BeginPlay() override;
