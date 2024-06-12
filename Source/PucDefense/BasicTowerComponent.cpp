@@ -5,6 +5,7 @@
 
 UBasicTowerComponent::UBasicTowerComponent() {
     PrimaryComponentTick.bCanEverTick = true;
+    ShootInterval = 1.0f;
 }
 
 void UBasicTowerComponent::BeginPlay() {

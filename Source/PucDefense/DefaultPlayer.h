@@ -27,6 +27,12 @@ protected:
     virtual void BeginPlay() override;
     virtual void Tick(float DeltaTime) override;
 
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player | Towers")
+    int MaxEnergy;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Player | Towers")
+    int CurrentEnergy;
+
 private:
     UFUNCTION(BlueprintCallable, Category = "Player")
     void Move(FVector2D Direction);
