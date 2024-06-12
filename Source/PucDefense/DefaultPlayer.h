@@ -4,6 +4,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "Math/MathFwd.h"
+#include "PucDefense/TowerDataAsset.h"
 #include "DefaultPlayer.generated.h"
 
 UCLASS()
@@ -13,9 +14,6 @@ class PUCDEFENSE_API ADefaultPlayer : public ACharacter {
 
 public:
     ADefaultPlayer();
-
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player | Towers")
-    TSubclassOf<AActor> TowerBlueprint;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player | Towers")
     USceneComponent *PlacementLineTraceOrigin;
@@ -32,6 +30,12 @@ protected:
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Player | Towers")
     int CurrentEnergy;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Player | Towers")
+    UTowerDataAsset *CurrentTowerDataAsset;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player | Towers")
+    TArray<UTowerDataAsset *> TowerDataAssets;
 
 private:
     UFUNCTION(BlueprintCallable, Category = "Player")

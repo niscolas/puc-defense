@@ -6,10 +6,16 @@
 
 ADefaultPlayer::ADefaultPlayer() {
     PrimaryActorTick.bCanEverTick = true;
+    MaxEnergy = 100;
 }
 
 void ADefaultPlayer::BeginPlay() {
     Super::BeginPlay();
+
+    CurrentEnergy = MaxEnergy;
+    if (TowerDataAssets.Num() >= 1) {
+        CurrentTowerDataAsset = TowerDataAssets[0];
+    }
 }
 
 void ADefaultPlayer::Tick(float DeltaTime) {
@@ -44,6 +50,9 @@ void ADefaultPlayer::PlaceTower() {
                                                        CollisionParams);
     DrawPlaceTowerDebug(Start, End, DidHit, HitResult.Location);
 
+    if (!CurrentTowerDataAsset || CurrentEnergy < CurrentTowerDataAsset->EnergyCost)
+        return;
+
     if (!DidHit)
         return;
 
@@ -54,11 +63,14 @@ void ADefaultPlayer::PlaceTower() {
     SpawnParams.SpawnCollisionHandlingOverride =
         ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButDontSpawnIfColliding;
 
+    TSubclassOf<AActor> TowerBlueprint = CurrentTowerDataAsset->Blueprint;
     if (!TowerBlueprint)
         return;
 
     GetWorld()->SpawnActor<AActor>(TowerBlueprint, TargetLocation, FRotator::ZeroRotator,
                                    FActorSpawnParameters());
+
+    CurrentEnergy -= CurrentTowerDataAsset->EnergyCost;
 }
 
 void ADefaultPlayer::DrawPlaceTowerDebug(FVector Start,
