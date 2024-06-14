@@ -3,6 +3,7 @@
 #include "Engine/EngineTypes.h"
 #include "GameFramework/Actor.h"
 #include "Math/MathFwd.h"
+#include "PucDefense/DefaultTowerSlot.h"
 
 ADefaultPlayer::ADefaultPlayer() {
     PrimaryActorTick.bCanEverTick = true;
@@ -50,25 +51,12 @@ void ADefaultPlayer::PlaceTower() {
                                                        CollisionParams);
     DrawPlaceTowerDebug(Start, End, DidHit, HitResult.Location);
 
-    if (!CurrentTowerDataAsset || CurrentEnergy < CurrentTowerDataAsset->EnergyCost)
+    if (!DidHit || !CurrentTowerDataAsset || CurrentEnergy < CurrentTowerDataAsset->EnergyCost)
         return;
 
-    if (!DidHit)
+    ADefaultTowerSlot *TowerSlot = Cast<ADefaultTowerSlot>(HitResult.GetActor());
+    if (!TowerSlot || !TowerSlot->TryPlace(CurrentTowerDataAsset->Blueprint, this))
         return;
-
-    FVector TargetLocation = HitResult.ImpactPoint;
-    FActorSpawnParameters SpawnParams;
-    SpawnParams.Owner = this;
-    SpawnParams.Instigator = GetInstigator();
-    SpawnParams.SpawnCollisionHandlingOverride =
-        ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButDontSpawnIfColliding;
-
-    TSubclassOf<AActor> TowerBlueprint = CurrentTowerDataAsset->Blueprint;
-    if (!TowerBlueprint)
-        return;
-
-    GetWorld()->SpawnActor<AActor>(TowerBlueprint, TargetLocation, FRotator::ZeroRotator,
-                                   FActorSpawnParameters());
 
     CurrentEnergy -= CurrentTowerDataAsset->EnergyCost;
     EnergyChanged.Broadcast(CurrentEnergy, MaxEnergy);
