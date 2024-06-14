@@ -71,6 +71,7 @@ void ADefaultPlayer::PlaceTower() {
                                    FActorSpawnParameters());
 
     CurrentEnergy -= CurrentTowerDataAsset->EnergyCost;
+    EnergyChanged.Broadcast(CurrentEnergy, MaxEnergy);
 }
 
 void ADefaultPlayer::DrawPlaceTowerDebug(FVector Start,

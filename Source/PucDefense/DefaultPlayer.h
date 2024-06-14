@@ -7,6 +7,9 @@
 #include "PucDefense/TowerDataAsset.h"
 #include "DefaultPlayer.generated.h"
 
+UDELEGATE()
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FEnergyChanged, int, NewCurrent, int, Max);
+
 UCLASS()
 
 class PUCDEFENSE_API ADefaultPlayer : public ACharacter {
@@ -36,6 +39,9 @@ protected:
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player | Towers")
     TArray<UTowerDataAsset *> TowerDataAssets;
+
+    UPROPERTY(BlueprintAssignable, Category = "Player | Towers")
+    FEnergyChanged EnergyChanged;
 
 private:
     UFUNCTION(BlueprintCallable, Category = "Player")
