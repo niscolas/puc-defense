@@ -13,7 +13,7 @@ ADefaultPlayer::ADefaultPlayer() {
 void ADefaultPlayer::BeginPlay() {
     Super::BeginPlay();
 
-    CurrentEnergy = MaxEnergy;
+    CurrentEnergy = 0;
     if (TowerDataAssets.Num() >= 1) {
         CurrentTowerDataAsset = TowerDataAssets[0];
     }
@@ -51,14 +51,15 @@ void ADefaultPlayer::PlaceTower() {
                                                        CollisionParams);
     DrawPlaceTowerDebug(Start, End, DidHit, HitResult.Location);
 
-    if (!DidHit || !CurrentTowerDataAsset || CurrentEnergy < CurrentTowerDataAsset->EnergyCost)
+    if (!DidHit || !CurrentTowerDataAsset ||
+        CurrentEnergy + CurrentTowerDataAsset->EnergyCost > MaxEnergy)
         return;
 
     ADefaultTowerSlot *TowerSlot = Cast<ADefaultTowerSlot>(HitResult.GetActor());
     if (!TowerSlot || !TowerSlot->TryPlace(CurrentTowerDataAsset->Blueprint, this))
         return;
 
-    CurrentEnergy -= CurrentTowerDataAsset->EnergyCost;
+    CurrentEnergy += CurrentTowerDataAsset->EnergyCost;
     EnergyChanged.Broadcast(CurrentEnergy, MaxEnergy);
 }
 
