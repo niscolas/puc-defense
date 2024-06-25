@@ -33,7 +33,7 @@ void UBasicEnemyComponent::BeginPlay() {
 
     UE_LOG(LogTemp, Log, TEXT("Target Destination: %s"), *TargetDestination->GetName());
 
-    AIController->MoveToActor(TargetDestination);
+    AIController->MoveToActor(TargetDestination, 10);
 }
 
 void UBasicEnemyComponent::TickComponent(float DeltaTime,

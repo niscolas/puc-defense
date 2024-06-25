@@ -3,6 +3,7 @@
 #include "Components/SceneComponent.h"
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "GameFramework/DamageType.h"
 #include "Math/MathFwd.h"
 #include "PucDefense/TowerDataAsset.h"
 #include "DefaultPlayer.generated.h"
@@ -43,9 +44,10 @@ protected:
     UPROPERTY(BlueprintAssignable, Category = "Player | Towers")
     FEnergyChanged EnergyChanged;
 
+    virtual void FellOutOfWorld(const UDamageType &damageType) override;
+
 private:
-    UFUNCTION(BlueprintCallable, Category = "Player")
-    void Move(FVector2D Direction);
+    UFUNCTION(BlueprintCallable, Category = "Player") void Move(FVector2D Direction);
 
     UFUNCTION(BlueprintCallable, Category = "Player")
     void Look(FVector2D Direction);

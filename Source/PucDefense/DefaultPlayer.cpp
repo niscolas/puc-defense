@@ -2,6 +2,9 @@
 #include "DrawDebugHelpers.h"
 #include "Engine/EngineTypes.h"
 #include "GameFramework/Actor.h"
+#include "GameFramework/Controller.h"
+#include "GameFramework/PlayerStart.h"
+#include "Kismet/GameplayStatics.h"
 #include "Math/MathFwd.h"
 #include "PucDefense/DefaultTowerSlot.h"
 
@@ -21,6 +24,20 @@ void ADefaultPlayer::BeginPlay() {
 
 void ADefaultPlayer::Tick(float DeltaTime) {
     Super::Tick(DeltaTime);
+}
+
+void ADefaultPlayer::FellOutOfWorld(const UDamageType &damageType) {
+    TArray<AActor *> PlayerStarts;
+    UGameplayStatics::GetAllActorsOfClass(GetWorld(), APlayerStart::StaticClass(), PlayerStarts);
+
+    if (PlayerStarts.Num() == 0)
+        return;
+
+    APlayerStart *PlayerStart = Cast<APlayerStart>(PlayerStarts[0]);
+
+    if (PlayerStart) {
+        SetActorLocation(PlayerStart->GetActorLocation());
+    }
 }
 
 void ADefaultPlayer::Move(FVector2D Direction) {
