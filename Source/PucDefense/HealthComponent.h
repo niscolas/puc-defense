@@ -2,7 +2,11 @@
 
 #include "Components/ActorComponent.h"
 #include "CoreMinimal.h"
+#include "Delegates/DelegateCombinations.h"
 #include "HealthComponent.generated.h"
+
+UDELEGATE()
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FDamageTaken, float, Amount);
 
 UDELEGATE()
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnDeath);
@@ -37,6 +41,9 @@ public:
     UPROPERTY(BlueprintAssignable, Category = "Health")
     FOnDeath OnDeath;
 
+    UPROPERTY(BlueprintAssignable, Category = "Health")
+    FDamageTaken DamageTaken;
+
 protected:
     virtual void BeginPlay() override;
 
@@ -50,4 +57,12 @@ protected:
     bool IsDead;
 
     void Set(float Amount);
+
+private:
+    UFUNCTION()
+    void OnOwnerTakeAnyDamage(AActor *DamagedActor,
+                              float Damage,
+                              const class UDamageType *DamageType,
+                              class AController *InstigatedBy,
+                              AActor *DamageCauser);
 };

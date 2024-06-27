@@ -8,6 +8,7 @@ UHealthComponent::UHealthComponent() {
 
 void UHealthComponent::BeginPlay() {
     Super::BeginPlay();
+    GetOwner()->OnTakeAnyDamage.AddDynamic(this, &UHealthComponent::OnOwnerTakeAnyDamage);
 }
 
 void UHealthComponent::TickComponent(float DeltaTime,
@@ -16,8 +17,22 @@ void UHealthComponent::TickComponent(float DeltaTime,
     Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 }
 
+void UHealthComponent::OnOwnerTakeAnyDamage(AActor *DamagedActor,
+                                            float Damage,
+                                            const class UDamageType *DamageType,
+                                            class AController *InstigatedBy,
+                                            AActor *DamageCauser) {
+    TakeDamage(Damage);
+}
+
 void UHealthComponent::TakeDamage(float Amount) {
+    if (Amount <= 0) {
+        return;
+    }
+
     Set(Current - Amount);
+    UE_LOG(LogTemp, Warning, TEXT("Current HP: %f"), Current);
+    DamageTaken.Broadcast(Amount);
 }
 
 void UHealthComponent::Heal(float Amount) {
