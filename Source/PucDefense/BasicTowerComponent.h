@@ -1,7 +1,10 @@
 #pragma once
 
+#include "Animation/AnimNodeBase.h"
 #include "Components/ActorComponent.h"
+#include "Components/SceneComponent.h"
 #include "CoreMinimal.h"
+#include "PucDefense/Weapon.h"
 #include "BasicTowerComponent.generated.h"
 
 UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent))
@@ -13,24 +16,32 @@ public:
     UBasicTowerComponent();
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Tower")
-    TSubclassOf<AActor> BulletBlueprint;
-
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Tower")
-    USceneComponent *BulletSpawnPoint;
-
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Tower")
     float ShootInterval;
 
-protected:
-    virtual void BeginPlay() override;
-
-    virtual void TickComponent(float DeltaTime,
-                               ELevelTick TickType,
-                               FActorComponentTickFunction *ThisTickFunction) override;
-
 private:
+    UFUNCTION(BlueprintCallable, Category = "Tower")
+    void Setup();
+
+    UPROPERTY(EditAnywhere,
+              BlueprintReadWrite,
+              Category = "Tower",
+              meta = (AllowPrivateAccess = "true"))
+    TSubclassOf<AActor> WeaponBlueprint;
+
+    UPROPERTY(EditAnywhere,
+              BlueprintReadWrite,
+              Category = "Tower",
+              meta = (AllowPrivateAccess = "true"))
+    USceneComponent *WeaponSpawnPoint;
+
     UFUNCTION(BlueprintCallable, Category = "Tower")
     void Shoot();
 
     FTimerHandle ShootTimerHandle;
+
+    UPROPERTY(VisibleAnywhere,
+              BlueprintReadOnly,
+              Category = "Tower",
+              meta = (AllowPrivateAccess = "true"))
+    AActor *WeaponInstance;
 };

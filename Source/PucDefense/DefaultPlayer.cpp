@@ -7,6 +7,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Math/MathFwd.h"
 #include "PucDefense/DefaultTowerSlot.h"
+#include "PucDefense/Weapon.h"
 
 ADefaultPlayer::ADefaultPlayer() {
     PrimaryActorTick.bCanEverTick = true;
@@ -91,4 +92,36 @@ void ADefaultPlayer::DrawPlaceTowerDebug(FVector Start,
     if (DidHit) {
         DrawDebugSphere(GetWorld(), HitLocation, 20.0f, 10, FColor::Yellow, false, 1.0f);
     }
+}
+
+void ADefaultPlayer::SpawnWeapons() {
+    for (UPlayerWeaponDataAsset *WeaponDataAsset : WeaponDataAssets) {
+        if (!WeaponsSpawnPoint || !WeaponDataAsset || !(WeaponDataAsset->Blueprint)) {
+            continue;
+        }
+
+        AActor *WeaponActor = GetWorld()->SpawnActor<AActor>(
+            WeaponDataAsset->Blueprint, WeaponsSpawnPoint->GetComponentLocation(),
+            WeaponsSpawnPoint->GetComponentRotation());
+
+        if (!WeaponActor) {
+            continue;
+        }
+
+        IWeapon *Weapon = Cast<IWeapon>(WeaponActor);
+        if (!Weapon) {
+            return;
+        }
+
+        WeaponInstances.Add(Weapon);
+    }
+}
+
+void ADefaultPlayer::FireWeapon() {
+    int WeaponCount = WeaponInstances.Num();
+    if (WeaponCount <= 0 || CurrentWeaponIndex < 0 || CurrentWeaponIndex >= WeaponCount) {
+        return;
+    }
+
+    WeaponInstances[CurrentWeaponIndex]->Fire(GetActorForwardVector());
 }

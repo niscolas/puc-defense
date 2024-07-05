@@ -5,7 +5,9 @@
 #include "GameFramework/Character.h"
 #include "GameFramework/DamageType.h"
 #include "Math/MathFwd.h"
+#include "PlayerWeaponDataAsset.h"
 #include "PucDefense/TowerDataAsset.h"
+#include "PucDefense/Weapon.h"
 #include "DefaultPlayer.generated.h"
 
 UDELEGATE()
@@ -47,7 +49,35 @@ protected:
     virtual void FellOutOfWorld(const UDamageType &damageType) override;
 
 private:
-    UFUNCTION(BlueprintCallable, Category = "Player") void Move(FVector2D Direction);
+    UPROPERTY(EditAnywhere,
+              BlueprintReadWrite,
+              Category = "Player | Weapons",
+              meta = (AllowPrivateAccess = "true"))
+    USceneComponent *WeaponsSpawnPoint;
+
+    UPROPERTY(VisibleAnywhere,
+              BlueprintReadOnly,
+              Category = "Player | Weapons",
+              meta = (AllowPrivateAccess = "true"))
+    int CurrentWeaponIndex;
+
+    UPROPERTY(VisibleAnywhere,
+              BlueprintReadOnly,
+              Category = "Player | Weapons",
+              meta = (AllowPrivateAccess = "true"))
+    TArray<IWeapon *> WeaponInstances;
+
+    UPROPERTY(EditAnywhere,
+              BlueprintReadWrite,
+              Category = "Player | Weapons",
+              meta = (AllowPrivateAccess = "true"))
+    TArray<class UPlayerWeaponDataAsset *> WeaponDataAssets;
+
+    UFUNCTION(BlueprintCallable, Category = "Player")
+    void Move(FVector2D Direction);
+
+    UFUNCTION(BlueprintCallable, Category = "Player | Weapons")
+    void FireWeapon();
 
     UFUNCTION(BlueprintCallable, Category = "Player")
     void Look(FVector2D Direction);
@@ -57,4 +87,6 @@ private:
 
     UFUNCTION(BlueprintCallable, Category = "Player")
     void DrawPlaceTowerDebug(FVector Start, FVector End, bool DidHit, FVector HitLocation);
+
+    void SpawnWeapons();
 };

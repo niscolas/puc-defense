@@ -1,28 +1,38 @@
 #include "BasicTowerComponent.h"
+#include "GameFramework/Actor.h"
 #include "Kismet/GameplayStatics.h"
 #include "PucDefense/Enemy.h"
+#include "PucDefense/Weapon.h"
 #include "Templates/Casts.h"
 
 UBasicTowerComponent::UBasicTowerComponent() {
-    PrimaryComponentTick.bCanEverTick = true;
+    PrimaryComponentTick.bCanEverTick = false;
     ShootInterval = 1.0f;
 }
 
-void UBasicTowerComponent::BeginPlay() {
-    Super::BeginPlay();
+void UBasicTowerComponent::Setup() {
     GetOwner()->GetWorldTimerManager().SetTimer(ShootTimerHandle, this,
                                                 &UBasicTowerComponent::Shoot, ShootInterval, true);
-}
 
-void UBasicTowerComponent::TickComponent(float DeltaTime,
-                                         ELevelTick TickType,
-                                         FActorComponentTickFunction *ThisTickFunction) {
-    Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+    if (!WeaponBlueprint || !WeaponSpawnPoint) {
+        return;
+    }
+
+    AActor *WeaponActor =
+        GetWorld()->SpawnActor<AActor>(WeaponBlueprint, WeaponSpawnPoint->GetComponentLocation(),
+                                       WeaponSpawnPoint->GetComponentRotation());
+
+    if (!WeaponActor->Implements<UWeapon>()) {
+        return;
+    }
+
+    WeaponInstance = WeaponActor;
 }
 
 void UBasicTowerComponent::Shoot() {
-    if (!BulletSpawnPoint)
+    if (!WeaponInstance) {
         return;
+    }
 
     TArray<AActor *> OutEnemies;
     UGameplayStatics::GetAllActorsWithInterface(GetWorld(), UEnemy::StaticClass(), OutEnemies);
@@ -34,12 +44,8 @@ void UBasicTowerComponent::Shoot() {
     RandomStream.GenerateNewSeed();
 
     AActor *TargetEnemy = OutEnemies[RandomStream.RandRange(0, OutEnemies.Num() - 1)];
+    FVector BulletSpawnDirection =
+        TargetEnemy->GetActorLocation() - WeaponSpawnPoint->GetComponentLocation();
 
-    FVector BulletSpawnLocation = BulletSpawnPoint->GetComponentLocation();
-    FVector BulletSpawnDirection = TargetEnemy->GetActorLocation() - BulletSpawnLocation;
-    BulletSpawnDirection.Normalize();
-    FRotator BulletSpawnRotation = BulletSpawnDirection.Rotation();
-
-    GetWorld()->SpawnActor<AActor>(BulletBlueprint, BulletSpawnLocation, BulletSpawnRotation,
-                                   FActorSpawnParameters());
+    IWeapon::Execute_Fire(WeaponInstance, BulletSpawnDirection);
 }
