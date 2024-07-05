@@ -65,7 +65,7 @@ private:
               BlueprintReadOnly,
               Category = "Player | Weapons",
               meta = (AllowPrivateAccess = "true"))
-    TArray<IWeapon *> WeaponInstances;
+    TArray<AActor *> WeaponInstances;
 
     UPROPERTY(EditAnywhere,
               BlueprintReadWrite,
@@ -88,5 +88,6 @@ private:
     UFUNCTION(BlueprintCallable, Category = "Player")
     void DrawPlaceTowerDebug(FVector Start, FVector End, bool DidHit, FVector HitLocation);
 
+    UFUNCTION(BlueprintCallable, Category = "Player | Weapons")
     void SpawnWeapons();
 };

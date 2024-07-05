@@ -18,6 +18,7 @@ void ADefaultPlayer::BeginPlay() {
     Super::BeginPlay();
 
     CurrentEnergy = 0;
+
     if (TowerDataAssets.Num() >= 1) {
         CurrentTowerDataAsset = TowerDataAssets[0];
     }
@@ -104,16 +105,13 @@ void ADefaultPlayer::SpawnWeapons() {
             WeaponDataAsset->Blueprint, WeaponsSpawnPoint->GetComponentLocation(),
             WeaponsSpawnPoint->GetComponentRotation());
 
-        if (!WeaponActor) {
+        if (!WeaponActor || !WeaponActor->Implements<UWeapon>()) {
             continue;
         }
 
-        IWeapon *Weapon = Cast<IWeapon>(WeaponActor);
-        if (!Weapon) {
-            return;
-        }
-
-        WeaponInstances.Add(Weapon);
+        WeaponActor->AttachToComponent(
+            WeaponsSpawnPoint, FAttachmentTransformRules(EAttachmentRule::SnapToTarget, true));
+        WeaponInstances.Add(WeaponActor);
     }
 }
 
@@ -123,5 +121,5 @@ void ADefaultPlayer::FireWeapon() {
         return;
     }
 
-    WeaponInstances[CurrentWeaponIndex]->Fire(GetActorForwardVector());
+    IWeapon::Execute_Fire(WeaponInstances[CurrentWeaponIndex], GetActorForwardVector());
 }

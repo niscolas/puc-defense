@@ -22,7 +22,7 @@ void UBasicTowerComponent::Setup() {
         GetWorld()->SpawnActor<AActor>(WeaponBlueprint, WeaponSpawnPoint->GetComponentLocation(),
                                        WeaponSpawnPoint->GetComponentRotation());
 
-    if (!WeaponActor->Implements<UWeapon>()) {
+    if (!WeaponActor || !WeaponActor->Implements<UWeapon>()) {
         return;
     }
 
