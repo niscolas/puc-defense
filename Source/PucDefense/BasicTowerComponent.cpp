@@ -2,6 +2,7 @@
 #include "GameFramework/Actor.h"
 #include "Kismet/GameplayStatics.h"
 #include "PucDefense/Enemy.h"
+#include "PucDefense/FindTargetStrategy.h"
 #include "PucDefense/Weapon.h"
 #include "Templates/Casts.h"
 
@@ -34,16 +35,21 @@ void UBasicTowerComponent::Shoot() {
         return;
     }
 
-    TArray<AActor *> OutEnemies;
-    UGameplayStatics::GetAllActorsWithInterface(GetWorld(), UEnemy::StaticClass(), OutEnemies);
+    TArray<UActorComponent *> FindTargetStrategyComponents =
+        GetOwner()->GetComponentsByInterface(UFindTargetStrategy::StaticClass());
 
-    if (OutEnemies.Num() == 0)
+    if (FindTargetStrategyComponents.Num() == 0) {
         return;
+    }
 
-    FRandomStream RandomStream;
-    RandomStream.GenerateNewSeed();
+    IFindTargetStrategy *FindTargetStrategy =
+        Cast<IFindTargetStrategy>(FindTargetStrategyComponents[0]);
+    AActor *TargetEnemy = FindTargetStrategy->Find();
 
-    AActor *TargetEnemy = OutEnemies[RandomStream.RandRange(0, OutEnemies.Num() - 1)];
+    if (!TargetEnemy) {
+        return;
+    }
+
     FVector BulletSpawnDirection =
         TargetEnemy->GetActorLocation() - WeaponSpawnPoint->GetComponentLocation();
 
