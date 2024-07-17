@@ -5,15 +5,15 @@
 #include "Components/SceneComponent.h"
 #include "CoreMinimal.h"
 #include "PucDefense/Weapon.h"
-#include "BasicTowerComponent.generated.h"
+#include "DefaultTowerBehaviorComponent.generated.h"
 
 UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent))
 
-class PUCDEFENSE_API UBasicTowerComponent : public UActorComponent {
+class PUCDEFENSE_API UDefaultTowerBehaviorComponent : public UActorComponent {
     GENERATED_BODY()
 
 public:
-    UBasicTowerComponent();
+    UDefaultTowerBehaviorComponent();
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Tower")
     float ShootInterval;
