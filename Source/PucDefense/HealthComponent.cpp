@@ -8,6 +8,7 @@ UHealthComponent::UHealthComponent() {
 
 void UHealthComponent::BeginPlay() {
     Super::BeginPlay();
+    Current = Max;
     GetOwner()->OnTakeAnyDamage.AddDynamic(this, &UHealthComponent::OnOwnerTakeAnyDamage);
 }
 
