@@ -83,6 +83,9 @@ private:
     void Look(FVector2D Direction);
 
     UFUNCTION(BlueprintCallable, Category = "Player")
+    void SelectTower(int index);
+
+    UFUNCTION(BlueprintCallable, Category = "Player")
     void PlaceTower();
 
     UFUNCTION(BlueprintCallable, Category = "Player")

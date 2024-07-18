@@ -52,6 +52,19 @@ void ADefaultPlayer::Look(FVector2D Direction) {
     AddControllerPitchInput(Direction.Y);
 }
 
+void ADefaultPlayer::SelectTower(int index) {
+    if (index < 0 || index >= TowerDataAssets.Num()) {
+        return;
+    }
+
+    UTowerDataAsset *TargetTowerDataAsset = TowerDataAssets[index];
+    if (!TargetTowerDataAsset) {
+        return;
+    }
+
+    CurrentTowerDataAsset = TargetTowerDataAsset;
+}
+
 void ADefaultPlayer::PlaceTower() {
     FCollisionQueryParams CollisionParams;
     CollisionParams.AddIgnoredActor(this);

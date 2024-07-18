@@ -54,7 +54,7 @@
               ];
               scripts = {
                 de-openue.exec = ''
-                  openue ${unrealPath} ${projectPath}
+                  nvidia-offload openue ${unrealPath} ${projectPath}
                 '';
 
                 de-uegen.exec = ''
