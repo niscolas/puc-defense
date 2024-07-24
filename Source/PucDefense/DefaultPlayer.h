@@ -27,6 +27,8 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player | Towers")
     float PlacementLineTraceRange;
 
+    void OnEnemyReachedDestination();
+
 protected:
     virtual void BeginPlay() override;
     virtual void Tick(float DeltaTime) override;

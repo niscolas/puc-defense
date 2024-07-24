@@ -136,3 +136,6 @@ void ADefaultPlayer::FireWeapon() {
 
     IWeapon::Execute_Fire(WeaponInstances[CurrentWeaponIndex], GetActorForwardVector());
 }
+
+void ADefaultPlayer::OnEnemyReachedDestination() {
+}

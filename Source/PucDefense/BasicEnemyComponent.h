@@ -3,11 +3,12 @@
 
 #include "Components/ActorComponent.h"
 #include "CoreMinimal.h"
+#include "PucDefense/Enemy.h"
 #include "BasicEnemyComponent.generated.h"
 
 UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent))
 
-class PUCDEFENSE_API UBasicEnemyComponent : public UActorComponent {
+class PUCDEFENSE_API UBasicEnemyComponent : public UActorComponent, public IEnemy {
     GENERATED_BODY()
 
 public:
